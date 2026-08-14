@@ -54,6 +54,9 @@
 
     <!-- stack scripts (if any) -->
     @stack('scripts')
+
+
+    @include('sudam-sweet-alert::alert')   
 </body>
 
 </html>

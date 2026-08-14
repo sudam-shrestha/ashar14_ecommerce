@@ -14,7 +14,7 @@
                     Connect with thousands of vendors. Find unique products or start your own shop today.
                 </p>
                 <div class="flex flex-wrap items-center gap-4 mt-6">
-                    <a href="#"
+                    <a href="{{route('dokan.index')}}"
                         class="bg-[#642671] hover:bg-[#54205F] text-white px-6 py-3 rounded-full font-medium shadow-lg shadow-[#642671]/20 transition-all flex items-center gap-2">
                         Start selling <i class="fas fa-arrow-right text-sm"></i>
                     </a>
@@ -166,7 +166,7 @@
             <p class="text-[#4B5563] mt-2 max-w-xl">Join our multi-vendor community. Register your shop, list
                 products, and start earning today.</p>
             <div class="flex flex-wrap gap-4 mt-5">
-                <a href="#"
+                <a href="{{route('dokan.index')}}"
                     class="bg-[#642671] hover:bg-[#54205F] text-white px-6 py-2.5 rounded-full font-medium shadow-md shadow-[#642671]/20 transition-all flex items-center gap-2">
                     Apply now <i class="fas fa-paper-plane text-sm"></i>
                 </a>

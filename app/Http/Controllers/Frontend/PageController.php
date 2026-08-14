@@ -11,4 +11,14 @@ class PageController extends Controller
     {
         return view('frontend.home');
     }
+
+    public function terms()
+    {
+        return view('frontend.terms');
+    }
+
+    public function policy()
+    {
+        return view('frontend.policy');
+    }
 }

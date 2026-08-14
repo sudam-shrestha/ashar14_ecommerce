@@ -18,7 +18,7 @@
 
         <!-- nav links + actions -->
         <div class="flex items-center gap-4 text-sm font-medium">
-            <a href="#"
+            <a href="{{route('dokan.index')}}"
                 class="text-[#4B5563] hover:text-[#642671] transition-colors hidden sm:inline-block">Become a
                 vendor</a>
             <a href="#" class="text-[#4B5563] hover:text-[#642671] transition-colors hidden sm:inline-block">Track
