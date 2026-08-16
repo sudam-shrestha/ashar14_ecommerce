@@ -25,7 +25,7 @@
                 </div>
                 <div class="flex items-center gap-6 mt-6 text-sm text-[#4B5563]">
                     <span><i class="fas fa-store text-[#0F766E] mr-1"></i> 200+ vendors</span>
-                    <span><i class="fas fa-box text-[#0F766E] mr-1"></i> 1.2k products</span>
+                    <span><i class="fas fa-box text-[#0F766E] mr-1"></i> {{ $products->count() }}+ products</span>
                 </div>
             </div>
             <div class="hidden md:flex justify-center relative">
@@ -44,114 +44,33 @@
         </div>
     </section>
 
-    <!-- ===== STATIC PRODUCT SECTION (sample) ===== -->
+    <!-- ===== DYNAMIC PRODUCT SECTION ===== -->
     <section class="mb-12">
         <div class="flex items-center justify-between mb-6">
-            <h2 class="text-2xl font-heading font-bold text-[#1F2937]">✨ Featured products</h2>
-            <a href="#" class="text-[#642671] hover:text-[#54205F] text-sm font-medium flex items-center gap-1">
+            <h2 class="text-2xl font-heading font-bold text-[#1F2937]">✨ Featured Products</h2>
+            <a href="{{route('products')}}" class="text-[#642671] hover:text-[#54205F] text-sm font-medium flex items-center gap-1">
                 View all <i class="fas fa-arrow-right text-xs"></i>
             </a>
         </div>
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            <!-- product card 1 -->
-            <div
-                class="bg-white border border-[#E5E7EB] rounded-xl shadow-brand overflow-hidden hover:shadow-xl transition-shadow">
-                <div class="h-48 bg-[#F8F6FA] flex items-center justify-center text-[#642671]/40">
-                    <i class="fas fa-image text-5xl"></i>
-                </div>
-                <div class="p-4">
-                    <h3 class="font-heading font-semibold text-[#1F2937]">Wireless earbuds</h3>
-                    <div class="flex items-center gap-1 text-sm text-yellow-400">
-                        <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i
-                            class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
-                        <span class="text-[#4B5563] text-xs ml-1">(24)</span>
-                    </div>
-                    <div class="flex items-center gap-2 mt-1">
-                        <span class="text-lg font-bold text-[#1F2937]">$49</span>
-                        <span class="text-sm text-[#4B5563] line-through">$79</span>
-                        <span class="text-xs bg-[#0F766E]/10 text-[#0F766E] px-2 py-0.5 rounded-full">-38%</span>
-                    </div>
-                    <div class="flex items-center justify-between mt-3">
-                        <span class="text-xs text-[#4B5563]"><i class="fas fa-store mr-1"></i> AudioHub</span>
-                        <button
-                            class="bg-[#642671] hover:bg-[#54205F] text-white text-sm px-4 py-1.5 rounded-full transition-colors">Add</button>
-                    </div>
-                </div>
+
+        @if($products->count() > 0)
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                @foreach($products as $product)
+                    <x-product-card :product="$product" />
+                @endforeach
             </div>
-            <!-- product card 2 -->
-            <div
-                class="bg-white border border-[#E5E7EB] rounded-xl shadow-brand overflow-hidden hover:shadow-xl transition-shadow">
-                <div class="h-48 bg-[#F8F6FA] flex items-center justify-center text-[#642671]/40">
-                    <i class="fas fa-image text-5xl"></i>
-                </div>
-                <div class="p-4">
-                    <h3 class="font-heading font-semibold text-[#1F2937]">Smart watch</h3>
-                    <div class="flex items-center gap-1 text-sm text-yellow-400">
-                        <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i
-                            class="fas fa-star"></i><i class="far fa-star"></i>
-                        <span class="text-[#4B5563] text-xs ml-1">(18)</span>
-                    </div>
-                    <div class="flex items-center gap-2 mt-1">
-                        <span class="text-lg font-bold text-[#1F2937]">$89</span>
-                        <span class="text-sm text-[#4B5563] line-through">$129</span>
-                    </div>
-                    <div class="flex items-center justify-between mt-3">
-                        <span class="text-xs text-[#4B5563]"><i class="fas fa-store mr-1"></i> TechVendor</span>
-                        <button
-                            class="bg-[#642671] hover:bg-[#54205F] text-white text-sm px-4 py-1.5 rounded-full transition-colors">Add</button>
-                    </div>
-                </div>
+        @else
+            <!-- No Products Message -->
+            <div class="bg-white border border-[#E5E7EB] rounded-xl shadow-brand p-12 text-center">
+                <i class="fas fa-box-open text-6xl text-[#642671]/20 mb-4"></i>
+                <h3 class="text-xl font-heading font-semibold text-[#1F2937] mb-2">No Products Available</h3>
+                <p class="text-[#4B5563]">Be the first vendor to list a product on CodeIT Dokan!</p>
+                <a href="{{ route('dokan.index') }}"
+                   class="inline-block mt-4 bg-[#642671] hover:bg-[#54205F] text-white px-6 py-2.5 rounded-full font-medium transition-colors">
+                    Start Selling Now
+                </a>
             </div>
-            <!-- product card 3 -->
-            <div
-                class="bg-white border border-[#E5E7EB] rounded-xl shadow-brand overflow-hidden hover:shadow-xl transition-shadow">
-                <div class="h-48 bg-[#F8F6FA] flex items-center justify-center text-[#642671]/40">
-                    <i class="fas fa-image text-5xl"></i>
-                </div>
-                <div class="p-4">
-                    <h3 class="font-heading font-semibold text-[#1F2937]">Organic tea</h3>
-                    <div class="flex items-center gap-1 text-sm text-yellow-400">
-                        <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i
-                            class="fas fa-star"></i><i class="fas fa-star"></i>
-                        <span class="text-[#4B5563] text-xs ml-1">(42)</span>
-                    </div>
-                    <div class="flex items-center gap-2 mt-1">
-                        <span class="text-lg font-bold text-[#1F2937]">$12</span>
-                        <span class="text-sm text-[#4B5563] line-through">$18</span>
-                        <span class="text-xs bg-[#0F766E]/10 text-[#0F766E] px-2 py-0.5 rounded-full">-33%</span>
-                    </div>
-                    <div class="flex items-center justify-between mt-3">
-                        <span class="text-xs text-[#4B5563]"><i class="fas fa-store mr-1"></i> GreenLeaf</span>
-                        <button
-                            class="bg-[#642671] hover:bg-[#54205F] text-white text-sm px-4 py-1.5 rounded-full transition-colors">Add</button>
-                    </div>
-                </div>
-            </div>
-            <!-- product card 4 -->
-            <div
-                class="bg-white border border-[#E5E7EB] rounded-xl shadow-brand overflow-hidden hover:shadow-xl transition-shadow">
-                <div class="h-48 bg-[#F8F6FA] flex items-center justify-center text-[#642671]/40">
-                    <i class="fas fa-image text-5xl"></i>
-                </div>
-                <div class="p-4">
-                    <h3 class="font-heading font-semibold text-[#1F2937]">Backpack</h3>
-                    <div class="flex items-center gap-1 text-sm text-yellow-400">
-                        <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i
-                            class="fas fa-star-half-alt"></i><i class="far fa-star"></i>
-                        <span class="text-[#4B5563] text-xs ml-1">(9)</span>
-                    </div>
-                    <div class="flex items-center gap-2 mt-1">
-                        <span class="text-lg font-bold text-[#1F2937]">$34</span>
-                        <span class="text-sm text-[#4B5563] line-through">$45</span>
-                    </div>
-                    <div class="flex items-center justify-between mt-3">
-                        <span class="text-xs text-[#4B5563]"><i class="fas fa-store mr-1"></i> UrbanWear</span>
-                        <button
-                            class="bg-[#642671] hover:bg-[#54205F] text-white text-sm px-4 py-1.5 rounded-full transition-colors">Add</button>
-                    </div>
-                </div>
-            </div>
-        </div>
+        @endif
     </section>
 
     <!-- ===== DOKAN REGISTRATION REQUEST SECTION ===== -->
@@ -198,4 +117,14 @@
             <span class="text-xs text-[#4B5563] mt-1">200+ vendors already on board</span>
         </div>
     </section>
+
+    @push('scripts')
+    <script>
+        function addToCart(productId) {
+            // Simple cart functionality - you can expand this
+            alert('Product ' + productId + ' added to cart!');
+            // You can implement AJAX cart functionality here
+        }
+    </script>
+    @endpush
 </x-frontend-layout>
