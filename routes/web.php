@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\Frontend\AuthController;
+use App\Http\Controllers\Frontend\CartController;
 use App\Http\Controllers\Frontend\DokanController;
 use App\Http\Controllers\Frontend\PageController;
 use Illuminate\Support\Facades\Route;
@@ -19,19 +21,23 @@ Route::get("/privacy-policy",[PageController::class,'policy'])->name('policy');
 Route::get("/dokan-registration",[DokanController::class,'index'])->name('dokan.index');
 Route::post("/dokan-registration",[DokanController::class,'store'])->name('dokan.store');
 
-// Route::middleware(['auth'])->group(function () {
-//     Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
-//     Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
-//     Route::get('/wishlist', [WishlistController::class, 'index'])->name('wishlist.index');
-//     Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
+// Auth Routes
+Route::get('/login', [AuthController::class, 'login'])->name('login');
+Route::post('/login', [AuthController::class, 'loginSubmit'])->name('login.submit');
+Route::get('/register', [AuthController::class, 'register'])->name('register');
+Route::post('/register', [AuthController::class, 'registerSubmit'])->name('register.submit');
 
-//     // Vendor Routes (only for vendors)
-//     Route::middleware(['vendor'])->group(function () {
-//         Route::get('/vendor/dashboard', [VendorController::class, 'dashboard'])->name('vendor.dashboard');
-//         Route::get('/vendor/products', [VendorController::class, 'products'])->name('vendor.products.index');
-//     });
-// });
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-// Route::get('/login', [Auth\LoginController::class, 'showLoginForm'])->name('login');
-// Route::get('/register', [Auth\RegisterController::class, 'showRegistrationForm'])->name('register');
-// Route::post('/logout', [Auth\LoginController::class, 'logout'])->name('logout');
+Route::get('/google/redirect', [AuthController::class, 'redirect'])->name('google.redirect');
+Route::get('/google/callback', [AuthController::class, 'callback']);
+
+
+
+// Cart Routes
+Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
+Route::post('/cart/add', [CartController::class, 'add'])->name('cart.add');
+Route::post('/cart/update', [CartController::class, 'update'])->name('cart.update');
+Route::post('/cart/remove', [CartController::class, 'remove'])->name('cart.remove');
+Route::post('/cart/clear', [CartController::class, 'clear'])->name('cart.clear');
+Route::get('/cart/count', [CartController::class, 'getCount'])->name('cart.count');

@@ -334,11 +334,50 @@
                 document.body.style.overflow = 'auto';
             }
 
-            // Add to cart
             function addToCart(productId) {
                 const quantity = document.getElementById('quantityDisplay').textContent;
-                alert(`Product ${productId} added to cart!\nQuantity: ${quantity}`);
-                // You can implement AJAX cart functionality here
+
+                fetch('{{ route('cart.add') }}', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                        },
+                        body: JSON.stringify({
+                            product_id: productId,
+                            qty: quantity
+                        })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            // Update cart count in header
+                            updateHeaderCartCount(data.cart_count);
+                            showNotification('success', data.message);
+                        } else {
+                            if (data.redirect) {
+                                window.location.href = data.redirect;
+                                return;
+                            }
+                            showNotification('error', data.message);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        showNotification('error', 'Something went wrong. Please try again.');
+                    });
+            }
+
+            function updateHeaderCartCount(count) {
+                const cartBadge = document.querySelector('a[href*="cart"] .rounded-full');
+                if (cartBadge) {
+                    cartBadge.textContent = count;
+                }
+            }
+
+            function showNotification(type, message) {
+                // Simple alert - you can replace with a better notification system
+                alert(message);
             }
 
             // Buy now

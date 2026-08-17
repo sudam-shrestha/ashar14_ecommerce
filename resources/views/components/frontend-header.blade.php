@@ -54,7 +54,7 @@
                     </a>
 
                     <!-- Cart -->
-                    <a href="" class="relative text-[#4B5563] hover:text-[#642671] transition-colors">
+                    <a href="{{route('cart.index')}}" class="relative text-[#4B5563] hover:text-[#642671] transition-colors">
                         <i class="fas fa-shopping-bag text-lg"></i>
                         <span
                             class="absolute -top-1 -right-2 bg-[#642671] text-white text-[10px] px-1.5 py-0.5 rounded-full">
@@ -88,7 +88,7 @@
                             </a>
 
                             <div class="border-t border-[#E5E7EB] my-2"></div>
-                            <form method="POST" action="">
+                            <form method="POST" action="{{route('logout')}}">
                                 @csrf
                                 <button type="submit"
                                     class="w-full text-left block px-4 py-2 text-sm text-red-600 hover:bg-[#F8F6FA] transition-colors">
@@ -122,11 +122,12 @@
 
                 <!-- Login/Register Buttons -->
                 <div class="border-l border-[#E5E7EB] pl-3 flex items-center gap-2">
-                    <a href="" class="text-[#642671] hover:text-[#54205F] font-medium transition-colors">
+                    <a href="{{ route('login') }}"
+                        class="text-[#642671] hover:text-[#54205F] font-medium transition-colors">
                         Login
                     </a>
                     <span class="text-[#E5E7EB]">|</span>
-                    <a href=""
+                    <a href="{{ route('register') }}"
                         class="bg-[#642671] hover:bg-[#54205F] text-white px-4 py-1.5 rounded-full text-sm transition-colors">
                         Register
                     </a>
@@ -185,17 +186,18 @@
                     <i class="fas fa-store mr-2"></i> Vendor Dashboard
                 </a>
             @endif
-            <form method="POST" action="" class="pt-2 border-t border-[#E5E7EB]">
+            <form method="POST" action="{{route('logout')}}" class="pt-2 border-t border-[#E5E7EB]">
                 @csrf
                 <button type="submit" class="w-full text-left py-2 text-red-600 hover:text-red-700 transition-colors">
                     <i class="fas fa-sign-out-alt mr-2"></i> Logout
                 </button>
             </form>
         @else
-            <a href="" class="block py-2 text-[#642671] hover:text-[#54205F] font-medium transition-colors">
+            <a href="{{ route('login') }}"
+                class="block py-2 text-[#642671] hover:text-[#54205F] font-medium transition-colors">
                 <i class="fas fa-sign-in-alt mr-2"></i> Login
             </a>
-            <a href="" class="block py-2 text-[#4B5563] hover:text-[#642671] transition-colors">
+            <a href="{{ route('register') }}" class="block py-2 text-[#4B5563] hover:text-[#642671] transition-colors">
                 <i class="fas fa-user-plus mr-2"></i> Register
             </a>
             <a href="{{ route('dokan.index') }}"
