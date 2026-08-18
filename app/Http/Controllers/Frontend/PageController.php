@@ -3,11 +3,13 @@
 namespace App\Http\Controllers\Frontend;
 
 use App\Http\Controllers\Controller;
+use App\Models\Cart;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\View;
 
-class PageController extends Controller
+class PageController extends BaseController
 {
     public function home()
     {
@@ -33,7 +35,7 @@ class PageController extends Controller
             return view('frontend.products', compact('products', 'q'));
         }
         $products = Product::latest()->paginate(12);
-        return view('frontend.products', compact('products','q'));
+        return view('frontend.products', compact('products', 'q'));
     }
 
     public function product_details($slug)
@@ -43,6 +45,6 @@ class PageController extends Controller
             ->where('dokan_id', $product->dokan_id)
             ->limit(4)
             ->get();
-        return view('frontend.product-details', compact('product','related_products'));
+        return view('frontend.product-details', compact('product', 'related_products'));
     }
 }

@@ -54,11 +54,12 @@
                     </a>
 
                     <!-- Cart -->
-                    <a href="{{route('cart.index')}}" class="relative text-[#4B5563] hover:text-[#642671] transition-colors">
+                    <a href="{{ route('cart.index') }}"
+                        class="relative text-[#4B5563] hover:text-[#642671] transition-colors">
                         <i class="fas fa-shopping-bag text-lg"></i>
                         <span
                             class="absolute -top-1 -right-2 bg-[#642671] text-white text-[10px] px-1.5 py-0.5 rounded-full">
-                            {{ Auth::user()->cart_count ?? 0 }}
+                            {{ count($carts) }}
                         </span>
                     </a>
 
@@ -88,7 +89,7 @@
                             </a>
 
                             <div class="border-t border-[#E5E7EB] my-2"></div>
-                            <form method="POST" action="{{route('logout')}}">
+                            <form method="POST" action="{{ route('logout') }}">
                                 @csrf
                                 <button type="submit"
                                     class="w-full text-left block px-4 py-2 text-sm text-red-600 hover:bg-[#F8F6FA] transition-colors">
@@ -186,7 +187,7 @@
                     <i class="fas fa-store mr-2"></i> Vendor Dashboard
                 </a>
             @endif
-            <form method="POST" action="{{route('logout')}}" class="pt-2 border-t border-[#E5E7EB]">
+            <form method="POST" action="{{ route('logout') }}" class="pt-2 border-t border-[#E5E7EB]">
                 @csrf
                 <button type="submit" class="w-full text-left py-2 text-red-600 hover:text-red-700 transition-colors">
                     <i class="fas fa-sign-out-alt mr-2"></i> Logout

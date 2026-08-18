@@ -1,15 +1,26 @@
 <x-frontend-layout>
-
     <!-- ===== PRODUCT DETAILS PAGE ===== -->
     <div class="max-w-7xl mx-auto py-8 px-4">
         <!-- Breadcrumb -->
         <nav class="flex items-center gap-2 text-sm text-[#4B5563] mb-6">
             <a href="{{ route('home') }}" class="hover:text-[#642671] transition-colors">Home</a>
             <i class="fas fa-chevron-right text-xs"></i>
-            <a href="#" class="hover:text-[#642671] transition-colors">Products</a>
+            <a href="{{ route('products') }}" class="hover:text-[#642671] transition-colors">Products</a>
             <i class="fas fa-chevron-right text-xs"></i>
-            {{-- <span class="text-[#1F2937] font-medium truncate">{{ $product->name }}</span> --}}
+            <span class="text-[#1F2937] font-medium truncate">{{ $product->name }}</span>
         </nav>
+
+        @if(session('success'))
+            <div class="bg-[#0F766E]/10 border border-[#0F766E] text-[#0F766E] px-4 py-3 rounded-xl mb-6">
+                {{ session('success') }}
+            </div>
+        @endif
+
+        @if(session('error'))
+            <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-xl mb-6">
+                {{ session('error') }}
+            </div>
+        @endif
 
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
             <!-- ===== LEFT COLUMN - PRODUCT IMAGES ===== -->
@@ -129,42 +140,36 @@
                     </div>
                 </div>
 
-                <!-- Quantity & Actions -->
+                <!-- Quantity & Add to Cart -->
                 <div class="space-y-4">
-                    <!-- Quantity Selector -->
-                    <div class="flex items-center gap-4">
-                        <label class="text-sm font-medium text-[#1F2937]">Quantity:</label>
-                        <div class="flex items-center border border-[#E5E7EB] rounded-lg overflow-hidden">
-                            <button onclick="updateQuantity(-1)"
-                                class="px-4 py-2 bg-[#F8F6FA] hover:bg-[#E5E7EB] transition-colors text-[#1F2937]">
-                                <i class="fas fa-minus"></i>
-                            </button>
-                            <span id="quantityDisplay"
-                                class="px-6 py-2 text-[#1F2937] font-medium min-w-[40px] text-center">1</span>
-                            <button onclick="updateQuantity(1)"
-                                class="px-4 py-2 bg-[#F8F6FA] hover:bg-[#E5E7EB] transition-colors text-[#1F2937]">
-                                <i class="fas fa-plus"></i>
-                            </button>
-                        </div>
-                    </div>
+                    <form action="{{ route('cart.add') }}" method="POST" class="space-y-4">
+                        @csrf
+                        <input type="hidden" name="product_id" value="{{ $product->id }}">
 
-                    <!-- Action Buttons -->
-                    <div class="flex flex-col sm:flex-row gap-3">
-                        <button onclick="addToCart({{ $product->id }})"
-                            class="flex-1 bg-[#642671] hover:bg-[#54205F] text-white px-8 py-3 rounded-full font-medium shadow-lg shadow-[#642671]/20 transition-all flex items-center justify-center gap-2">
+                        <!-- Quantity Selector -->
+                        <div class="flex items-center gap-4">
+                            <label class="text-sm font-medium text-[#1F2937]">Quantity:</label>
+                            <div class="flex items-center border border-[#E5E7EB] rounded-lg overflow-hidden">
+                                <button type="button" onclick="updateQuantity(-1)"
+                                    class="px-4 py-2 bg-[#F8F6FA] hover:bg-[#E5E7EB] transition-colors text-[#1F2937]">
+                                    <i class="fas fa-minus"></i>
+                                </button>
+                                <span id="quantityDisplay"
+                                    class="px-6 py-2 text-[#1F2937] font-medium min-w-[40px] text-center">1</span>
+                                <button type="button" onclick="updateQuantity(1)"
+                                    class="px-4 py-2 bg-[#F8F6FA] hover:bg-[#E5E7EB] transition-colors text-[#1F2937]">
+                                    <i class="fas fa-plus"></i>
+                                </button>
+                            </div>
+                            <input type="hidden" name="qty" id="qtyInput" value="1">
+                        </div>
+
+                        <!-- Add to Cart Button -->
+                        <button type="submit"
+                            class="w-full bg-[#642671] hover:bg-[#54205F] text-white px-8 py-3 rounded-full font-medium shadow-lg shadow-[#642671]/20 transition-all flex items-center justify-center gap-2">
                             <i class="fas fa-shopping-cart"></i> Add to Cart
                         </button>
-                        <button onclick="buyNow({{ $product->id }})"
-                            class="flex-1 bg-[#0F766E] hover:bg-[#0D6B63] text-white px-8 py-3 rounded-full font-medium shadow-lg shadow-[#0F766E]/20 transition-all flex items-center justify-center gap-2">
-                            <i class="fas fa-bolt"></i> Buy Now
-                        </button>
-                    </div>
-
-                    <!-- Wishlist -->
-                    <button onclick="toggleWishlist({{ $product->id }})"
-                        class="w-full border border-[#E5E7EB] hover:border-[#642671] text-[#4B5563] hover:text-[#642671] px-6 py-2.5 rounded-full font-medium transition-all flex items-center justify-center gap-2">
-                        <i class="far fa-heart"></i> Add to Wishlist
-                    </button>
+                    </form>
                 </div>
 
                 <!-- Product Meta Info -->
@@ -241,6 +246,7 @@
             </div>
         </div>
 
+        <!-- Related Products -->
         @if ($related_products->count() > 0)
             <div class="mt-12">
                 <h2 class="text-2xl font-heading font-bold text-[#1F2937] mb-6">
@@ -274,6 +280,16 @@
                                             class="text-xs bg-[#0F766E]/10 text-[#0F766E] px-2 py-0.5 rounded-full">-{{ $related_product->discount }}%</span>
                                     @endif
                                 </div>
+                                <!-- Add to Cart Button for Related Product -->
+                                <form action="{{ route('cart.add') }}" method="POST" class="mt-3">
+                                    @csrf
+                                    <input type="hidden" name="product_id" value="{{ $related_product->id }}">
+                                    <input type="hidden" name="qty" value="1">
+                                    <button type="submit"
+                                        class="w-full bg-[#642671] hover:bg-[#54205F] text-white text-sm font-medium px-4 py-2 rounded-full transition-colors flex items-center justify-center gap-1">
+                                        <i class="fas fa-shopping-cart text-xs"></i> Add to Cart
+                                    </button>
+                                </form>
                             </div>
                         </div>
                     @endforeach
@@ -303,6 +319,7 @@
             function updateQuantity(change) {
                 quantity = Math.max(1, quantity + change);
                 document.getElementById('quantityDisplay').textContent = quantity;
+                document.getElementById('qtyInput').value = quantity;
             }
 
             // Change main image
@@ -332,73 +349,6 @@
             function closeImageModal() {
                 document.getElementById('imageModal').classList.add('hidden');
                 document.body.style.overflow = 'auto';
-            }
-
-            function addToCart(productId) {
-                const quantity = document.getElementById('quantityDisplay').textContent;
-
-                fetch('{{ route('cart.add') }}', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                        },
-                        body: JSON.stringify({
-                            product_id: productId,
-                            qty: quantity
-                        })
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            // Update cart count in header
-                            updateHeaderCartCount(data.cart_count);
-                            showNotification('success', data.message);
-                        } else {
-                            if (data.redirect) {
-                                window.location.href = data.redirect;
-                                return;
-                            }
-                            showNotification('error', data.message);
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                        showNotification('error', 'Something went wrong. Please try again.');
-                    });
-            }
-
-            function updateHeaderCartCount(count) {
-                const cartBadge = document.querySelector('a[href*="cart"] .rounded-full');
-                if (cartBadge) {
-                    cartBadge.textContent = count;
-                }
-            }
-
-            function showNotification(type, message) {
-                // Simple alert - you can replace with a better notification system
-                alert(message);
-            }
-
-            // Buy now
-            function buyNow(productId) {
-                const quantity = document.getElementById('quantityDisplay').textContent;
-                alert(`Proceeding to checkout for product ${productId}\nQuantity: ${quantity}`);
-            }
-
-            // Toggle wishlist
-            function toggleWishlist(productId) {
-                const button = event.currentTarget;
-                const icon = button.querySelector('i');
-                icon.classList.toggle('far');
-                icon.classList.toggle('fas');
-                icon.classList.toggle('text-red-500');
-
-                if (icon.classList.contains('fas')) {
-                    alert(`Product ${productId} added to wishlist! ❤️`);
-                } else {
-                    alert(`Product ${productId} removed from wishlist.`);
-                }
             }
 
             // Close modal with Escape key

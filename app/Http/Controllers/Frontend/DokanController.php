@@ -10,7 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use Sudam\SudamSweetAlert\Facades\SudamSweetAlert;
 
-class DokanController extends Controller
+class DokanController extends BaseController
 {
     public function index()
     {
