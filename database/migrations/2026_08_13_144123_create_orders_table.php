@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->foreignId('dokan_id')->constrained()->cascadeOnDelete();
             $table->double('total_amount');
-            $table->enum('status',["pending", "processing", "delivered"])->default("pending");
+            $table->enum('status',["pending", "processing", "delivered", "cancelled"])->default("pending");
             $table->enum('payment_method',["cod", "khalti"])->default("cod");
             $table->boolean('payment_status')->default(false);
             $table->timestamps();

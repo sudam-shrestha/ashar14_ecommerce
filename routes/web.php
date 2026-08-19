@@ -50,7 +50,11 @@ Route::middleware('auth')->group(function () {
     Route::post('/order/place', [OrderController::class, 'placeOrder'])->name('order.place');
     Route::get('/order/success/{orderId}', [OrderController::class, 'success'])->name('order.success');
     Route::get('/order/details/{orderId}', [OrderController::class, 'show'])->name('order.details');
+    Route::get('/order/cancel/{orderId}', [OrderController::class, 'cancel'])->name('order.cancel');
     Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
+
+    Route::get('/khalti/callback', [OrderController::class, 'khalti_callback'])->name('khalti.callback');
+
 
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 });

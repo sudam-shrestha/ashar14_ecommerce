@@ -130,8 +130,8 @@
                                     <i class="fas fa-money-bill-wave text-xl text-[#0F766E]"></i>
                                 </label>
                                 <label
-                                    class="flex items-center gap-3 p-3 border border-[#E5E7EB] rounded-xl cursor-pointer hover:bg-[#F8F6FA] transition-colors opacity-50">
-                                    <input type="radio" name="payment_method" value="khalti" disabled class="w-4 h-4">
+                                    class="flex items-center gap-3 p-3 border border-[#E5E7EB] rounded-xl cursor-pointer hover:bg-[#F8F6FA] transition-colors">
+                                    <input type="radio" name="payment_method" value="khalti" class="w-4 h-4">
                                     <div class="flex-1">
                                         <span class="font-medium text-[#1F2937]">Khalti</span>
                                         <p class="text-xs text-[#4B5563]">Coming soon</p>
@@ -146,7 +146,7 @@
 
                         <button type="submit"
                             class="w-full bg-[#642671] hover:bg-[#54205F] text-white font-medium py-3 px-4 rounded-xl shadow-lg shadow-[#642671]/20 transition-all duration-200 flex items-center justify-center gap-2">
-                            <i class="fas fa-check-circle"></i> Place Order (COD)
+                            <i class="fas fa-check-circle"></i> Place Order
                         </button>
                     </form>
 

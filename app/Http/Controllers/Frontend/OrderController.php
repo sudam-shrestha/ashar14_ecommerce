@@ -9,6 +9,7 @@ use App\Models\OrderItem;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Http;
 
 class OrderController extends BaseController
 {
@@ -51,10 +52,11 @@ class OrderController extends BaseController
     }
 
     /**
-     * Process order with COD payment
+     * Process order with COD or Khalti payment
      */
     public function placeOrder(Request $request)
     {
+        // return $request;
         if (!Auth::check()) {
             return redirect()->route('login')->with('error', 'Please login to place order.');
         }
@@ -109,16 +111,102 @@ class OrderController extends BaseController
                 ->where('dokan_id', $request->dokan_id)
                 ->delete();
 
-            DB::commit();
+            // If COD, commit and redirect to success
+            if ($request->payment_method === 'cod') {
+                DB::commit();
+                return redirect()->route('order.success', $order->id)
+                    ->with('success', 'Order placed successfully!');
+            }
 
-            return redirect()->route('order.success', $order->id)
-                ->with('success', 'Order placed successfully!');
+            // Khalti Payment Integration
+            $url = env('KHALTI_BASEURL') . "epayment/initiate/";
 
+            $response = Http::withHeaders([
+                "Authorization" => "Key " . env('KHALTI_SECRET')
+            ])->post($url, [
+                "return_url" => route('khalti.callback'),
+                "website_url" => env('APP_URL'),
+                "amount" => $totalAmount * 100,
+                "purchase_order_id" => $order->id,
+                "purchase_order_name" => "Order #" . $order->id,
+                "customer_info" => [
+                    "name" => Auth::user()->name,
+                    "email" => Auth::user()->email,
+                ]
+            ]);
+
+            $response = $response->json();
+
+            if (isset($response["pidx"])) {
+                DB::commit();
+                // Store pidx in session for callback verification
+                session(['khalti_pidx' => $response["pidx"]]);
+                return redirect()->to($response["payment_url"]);
+            } else {
+                throw new \Exception($response["error"] ?? 'Khalti payment initialization failed.');
+            }
         } catch (\Exception $e) {
             DB::rollBack();
             return redirect()->back()
                 ->with('error', 'Something went wrong: ' . $e->getMessage())
                 ->withInput();
+        }
+    }
+
+    /**
+     * Khalti Payment Callback
+     */
+    public function khalti_callback(Request $request)
+    {
+        try {
+            $pidx = $request->pidx;
+            $status = $request->status;
+            $orderId = $request->purchase_order_id;
+
+            if (!$orderId) {
+                return redirect()->route('orders.index')->with('error', 'Invalid order reference.');
+            }
+
+            // Find the order
+            $order = Order::where('id', $orderId)
+                ->where('user_id', Auth::id())
+                ->first();
+
+            if (!$order) {
+                return redirect()->route('orders.index')->with('error', 'Order not found.');
+            }
+
+            // Verify payment status with Khalti
+            $url = env('KHALTI_BASEURL') . "epayment/lookup/";
+            $response = Http::withHeaders([
+                "Authorization" => "Key " . env('KHALTI_SECRET')
+            ])->post($url, [
+                "pidx" => $pidx
+            ]);
+
+            $responseData = $response->json();
+
+            // Check if payment was successful
+            if ($response->successful() && isset($responseData['status']) && $responseData['status'] === 'Completed') {
+                // Update order payment status
+                $order->update([
+                    'payment_status' => true,
+                ]);
+
+                return redirect()->route('order.success', $order->id)
+                    ->with('success', 'Payment successful! Your order has been placed.');
+            } else {
+                // Payment failed or was cancelled
+                $order->update([
+                    'status' => 'cancelled'
+                ]);
+
+                return redirect()->route('order.cancel', $order->id)
+                    ->with('error', 'Payment was not completed. Please try again.');
+            }
+        } catch (\Exception $e) {
+            return redirect()->route('orders.index')
+                ->with('error', 'Something went wrong: ' . $e->getMessage());
         }
     }
 
@@ -132,6 +220,18 @@ class OrderController extends BaseController
             ->findOrFail($orderId);
 
         return view('frontend.order-success', compact('order'));
+    }
+
+    /**
+     * Show order cancel page
+     */
+    public function cancel($orderId)
+    {
+        $order = Order::with(['dokan', 'order_items.product'])
+            ->where('user_id', Auth::id())
+            ->findOrFail($orderId);
+
+        return view('frontend.order-cancel', compact('order'));
     }
 
     /**
@@ -151,7 +251,7 @@ class OrderController extends BaseController
      */
     public function index()
     {
-        $orders = Order::with('dokan')
+        $orders = Order::with(['dokan', 'order_items.product'])
             ->where('user_id', Auth::id())
             ->latest()
             ->paginate(10);
